@@ -4,28 +4,23 @@ Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
     :license: GPL-3.0, see LICENSE for more details.
 """
 
-
-from zomboid_rcon       import ZomboidRCON
 import os
 
+from zomboid_rcon import ZomboidRCON
 
 # Sets to env variables for testing, with defaults set otherwise
-IP          = os.getenv('IP')               if os.getenv('IP') is not None          else 'localhost'
-PORT        = int(os.getenv('PORT'))        if os.getenv('PORT') is not None        else 27015
-PASSWORD    = os.getenv('PASSWORD')         if os.getenv('PASSWORD') is not None    else 'myPassword'
-RETRIES     = int(os.getenv('RETRIES'))     if os.getenv('RETRIES') is not None     else 5
-LOGGING     = bool(os.getenv('LOGGING'))    if os.getenv('LOGGING') is not None     else False
+IP = os.getenv("IP") if os.getenv("IP") is not None else "127.0.0.1"
+PORT = int(os.getenv("PORT")) if os.getenv("PORT") is not None else 27015
+PASSWORD = os.getenv("PASSWORD") if os.getenv("PASSWORD") is not None else "myPassword"
+RETRIES = int(os.getenv("RETRIES")) if os.getenv("RETRIES") is not None else 5
+LOGGING = bool(os.getenv("LOGGING")) if os.getenv("LOGGING") is not None else True
 
 
 if __name__ == "__main__":
     pz = ZomboidRCON(
-        ip=IP,
-        port=PORT,
-        password=PASSWORD,
-        retries=RETRIES,
-        logging=LOGGING
+        ip=IP, port=PORT, password=PASSWORD, retries=RETRIES, logging=LOGGING
     )
-    
+
     # Shows list of all currently connected players
     print(pz.players().response)
 

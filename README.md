@@ -1,13 +1,12 @@
 # Zomboid-rcon: Python RCON for Project Zomboid Servers
- 
-### Version: 1.1.0
+
+### Version: 1.2.0
 
 Zomboid-rcon enables you to easily communicate with your Project Zomboid servers via RCON. With zomboid-rcon, you can send commands to your server, manage players, and more, all from within your Python script.
 
 - [GitHub Repo](https://github.com/jmwhitworth/zomboid_rcon)
 - [Pypi Package](https://pypi.org/project/zomboid-rcon/)
 
-<br><br>
 
 # Installation
 
@@ -17,7 +16,6 @@ To get started, simply install zomboid-rcon using pip:
 pip install zomboid-rcon
 ```
 
-<br><br>
 
 # Usage
 
@@ -46,13 +44,12 @@ if __name__ == "__main__":
 
 This example prints a list of all players currently connected to the server.
 
-<br><br>
 
 # Available Commands
 
 Zomboid-rcon provides built-in methods for the available RCON commands within Project Zomboid.
 
-### General Commands
+## General Commands
 
 - `additem("user", "item")` : Items can be found on the PZ wiki: https://pzwiki.net/wiki/Items
 - `addvehicle("user")` : Spawns a vehicle.
@@ -80,7 +77,7 @@ Zomboid-rcon provides built-in methods for the available RCON commands within Pr
 - `teleport("user", "toUser")` : Teleports to a player.
 - `teleportto(x, y, z)` : Teleports to certain coordinates.
 
-### Moderation Commands
+## Moderation Commands
 
 - `addalltowhitelist()` : Adds all current users connected with a password to the whitelist.
 - `adduser("user", "pwd")` : Adds a new user to the whitelist.
@@ -99,34 +96,37 @@ Zomboid-rcon provides built-in methods for the available RCON commands within Pr
 - `setaccesslevel("user", [admin | moderator | overseer | gm | observer])` : Set the access/permission level of a player.
 - `voiceban("user", [-true | -false])` : Ban a user from using the voice feature.
 
-<br>
-
-### Command not listed?
+## Command not listed?
 
 You can execute any custom command using the command method:
 ```python
 pz.command("command", "arg1", "arg2", "etc")
 ```
 
-<br><br>
 
 # Demonstration
 
 ![Zomboid RCON demonstration GIF](https://media.jackwhitworth.com/uploads/2023/12/zomboid_rcon_demo.gif)
 
-<br><br>
 
 # Known Issues
 
 Please note that zomboid-rcon uses the [timeout_decorator](https://pypi.org/project/timeout-decorator/) package, which is currently only compatible with Unix/Linux systems. As a result, **timeouts may cause errors on Windows machines**. We are actively working on finding an alternative solution for Windows users.
 
-<br><br>
 
 # Contributing
 
 We welcome contributions from anyone! If you would like to contribute to the project, please open an issue or submit a pull request on [Github](https://github.com/jmwhitworth/zomboid_rcon).
 
-<br><br>
+
+# Testing
+
+Tests can be ran using unittest:
+
+```bash
+python -m unittest ./tests/*.py
+```
+
 
 # License
 
