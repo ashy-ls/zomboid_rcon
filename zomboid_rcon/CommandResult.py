@@ -1,8 +1,4 @@
-"""
-Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
-    :copyright: (c) 2025 by JW: https://jackwhitworth.com
-    :license: GPL-3.0, see LICENSE for more details.
-"""
+"""Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
 
 class CommandResult:
@@ -25,6 +21,9 @@ class CommandResult:
         self.response = response
         self.successful = successful
         self.failureMessage = failureMessage
+
+    def __str__(self) -> str:
+        return self.response
 
     @property
     def command(self) -> str:
@@ -55,6 +54,11 @@ class CommandResult:
             self._failureMessage = failureMessage.strip()
         else:
             raise ValueError("Failure message used must be a string")
+
+    @property
+    def raw_response(self) -> str:
+        """Returns the raw server response regardless of success status."""
+        return self._response
 
     @property
     def response(self) -> str:

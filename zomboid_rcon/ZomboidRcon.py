@@ -1,13 +1,10 @@
-"""
-Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
-    :copyright: (c) 2025 by JW: https://jackwhitworth.com
-    :license: GPL-3.0, see LICENSE for more details.
-"""
+"""Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
-from .source import CommandResult, RconClient
+from .BaseRconClient import BaseRconClient
+from .CommandResult import CommandResult
 
 
-class ZomboidRCON(RconClient):
+class ZomboidRcon(BaseRconClient):
     """Used to interact with Zomboid servers via RCON"""
 
     def __init__(
@@ -16,7 +13,7 @@ class ZomboidRCON(RconClient):
         port: int = 27015,
         password: str = "pzserver",
         retries: int = 5,
-        logging: int = False,
+        logging: bool = False,
     ):
         super().__init__(ip, port, password, retries, logging)
 
@@ -32,11 +29,11 @@ class ZomboidRCON(RconClient):
         """
         return self.command("additem", user, item)
 
-    def addvehicle(self, user: str) -> CommandResult:
-        """Spawns a vehicle.
-        /addvehicle “user”
+    def addvehicle(self, vehicle: str, user: str) -> CommandResult:
+        """Spawns a vehicle near a player.
+        /addvehicle vehiclescript 'user'
         """
-        return self.command("addvehicle", user)
+        return self.command("addvehicle", vehicle, user)
 
     def addxp(self, user: str, perk: str, XP: int) -> CommandResult:
         """Gives XP to a player.
@@ -165,7 +162,7 @@ class ZomboidRCON(RconClient):
         """
         return self.command("stoprain")
 
-    def teleport(self, user: str, toUser: str) -> CommandResult:
+    def teleport(self, user: str, toUser: str | None = None) -> CommandResult:
         """Teleports to a player.
         /teleport "toUser" or /teleport "user" "toUser"
         """

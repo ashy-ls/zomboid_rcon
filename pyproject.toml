@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zomboid_rcon"
-version = "1.2.0"
+version = "1.3.0"
 description = "Python class for interacting with Project Zomboid servers using RCON "
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -27,7 +27,6 @@ keywords = [
 ]
 dependencies = [
     "rcon >= 2.4.9",
-    "timeout_decorator >= 0.5.0"
 ]
 requires-python = ">=3.10"
 
@@ -36,3 +35,9 @@ dev = []
 
 [project.urls]
 Homepage = "https://github.com/jmwhitworth/zomboid_rcon"
+
+[dependency-groups]
+dev = [
+    "black (>=26.5.1,<27.0.0)",
+    "isort (>=8.0.1,<9.0.0)"
+]

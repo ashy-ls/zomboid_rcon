@@ -1,8 +1,8 @@
-# Zomboid-rcon: Python RCON for Project Zomboid Servers
+# zomboid_rcon: Python RCON for Project Zomboid Servers
 
-### Version: 1.2.0
+### Version: 1.3.0
 
-Zomboid-rcon enables you to easily communicate with your Project Zomboid servers via RCON. With zomboid-rcon, you can send commands to your server, manage players, and more, all from within your Python script.
+zomboid_rcon enables you to easily communicate with your Project Zomboid servers via RCON. With zomboid_rcon, you can send commands to your server, manage players, and more, all from within your Python script.
 
 - [GitHub Repo](https://github.com/jmwhitworth/zomboid_rcon)
 - [Pypi Package](https://pypi.org/project/zomboid-rcon/)
@@ -19,27 +19,27 @@ pip install zomboid-rcon
 
 # Usage
 
-Using zomboid-rcon is easy. Here's a basic example:
+Using zomboid_rcon is easy. Here's a basic example:
 
 ```python
-from zomboid_rcon import ZomboidRCON
+from zomboid_rcon import ZomboidRcon
 
 if __name__ == "__main__":
-    pz = ZomboidRCON(ip='localhost', port=12345, password='myPassword')
+    pz = ZomboidRcon(ip='localhost', port=12345, password='myPassword')
     command = pz.serverMsg("You dead yet?")
-    print(command.response)
+    print(command)
 ```
 
 This example connects to a server running on your local machine and sends the message "You dead yet?".
 
-Zomboid-rcon provides several built-in methods for common server management tasks, such as getting a list of connected players:
+zomboid_rcon provides several built-in methods for common server management tasks, such as getting a list of connected players:
 
 ```python
-from zomboid_rcon import ZomboidRCON
+from zomboid_rcon import ZomboidRcon
 
 if __name__ == "__main__":
-    pz = ZomboidRCON(ip='localhost', port=12345, password='myPassword')
-    print(pz.players().response)
+    pz = ZomboidRcon(ip='localhost', port=12345, password='myPassword')
+    print(pz.players())
 ```
 
 This example prints a list of all players currently connected to the server.
@@ -47,7 +47,7 @@ This example prints a list of all players currently connected to the server.
 
 # Available Commands
 
-Zomboid-rcon provides built-in methods for the available RCON commands within Project Zomboid.
+zomboid_rcon provides built-in methods for the available RCON commands within Project Zomboid.
 
 ## General Commands
 
@@ -111,7 +111,7 @@ pz.command("command", "arg1", "arg2", "etc")
 
 # Known Issues
 
-Please note that zomboid-rcon uses the [timeout_decorator](https://pypi.org/project/timeout-decorator/) package, which is currently only compatible with Unix/Linux systems. As a result, **timeouts may cause errors on Windows machines**. We are actively working on finding an alternative solution for Windows users.
+Please raise any issues in the GitHub repo.
 
 
 # Contributing
@@ -124,10 +124,10 @@ We welcome contributions from anyone! If you would like to contribute to the pro
 Tests can be ran using unittest:
 
 ```bash
-python -m unittest ./tests/*.py
+python -m unittest
 ```
 
 
 # License
 
-Zomboid-rcon is licensed under the GPL-3.0 license.
+zomboid_rcon is licensed under the GPL-3.0 license.

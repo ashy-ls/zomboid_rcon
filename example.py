@@ -1,33 +1,29 @@
-"""
-Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
-    :copyright: (c) 2025 by JW: https://jackwhitworth.com
-    :license: GPL-3.0, see LICENSE for more details.
-"""
+"""Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
 import os
 
-from zomboid_rcon import ZomboidRCON
+from zomboid_rcon import ZomboidRcon
 
 # Sets to env variables for testing, with defaults set otherwise
-IP = os.getenv("IP") if os.getenv("IP") is not None else "127.0.0.1"
-PORT = int(os.getenv("PORT")) if os.getenv("PORT") is not None else 27015
-PASSWORD = os.getenv("PASSWORD") if os.getenv("PASSWORD") is not None else "myPassword"
-RETRIES = int(os.getenv("RETRIES")) if os.getenv("RETRIES") is not None else 5
-LOGGING = bool(os.getenv("LOGGING")) if os.getenv("LOGGING") is not None else True
+IP = os.getenv("IP", "127.0.0.1")
+PORT = int(os.getenv("PORT", 27015))
+PASSWORD = os.getenv("PASSWORD", "myPassword")
+RETRIES = int(os.getenv("RETRIES", 5))
+LOGGING = os.getenv("LOGGING", "False").lower() == "true"
 
 
 if __name__ == "__main__":
-    pz = ZomboidRCON(
+    pz = ZomboidRcon(
         ip=IP, port=PORT, password=PASSWORD, retries=RETRIES, logging=LOGGING
     )
 
     # Shows list of all currently connected players
-    print(pz.players().response)
+    print(pz.players())
 
     # Broadcasts message to all players
-    print(pz.servermsg("This is how you all died!").response)
+    print(pz.servermsg("This is how you all died!"))
 
     # Shows list of current server options and values
-    print(pz.showoptions().response)
+    print(pz.showoptions())
 
     # For more, check the README.md

@@ -1,19 +1,12 @@
-"""
-Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
-    :copyright: (c) 2025 by JW: https://jackwhitworth.com
-    :license: GPL-3.0, see LICENSE for more details.
-"""
+"""Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
 from rcon.source import Client
-from timeout_decorator import TimeoutError, timeout
 
 from .CommandResult import CommandResult
 
 
-class RconClient:
-    """
-    Parent class for handling RCON core functionality
-    """
+class BaseRconClient:
+    """RCON client for sending commands to a server."""
 
     def __init__(
         self, ip: str, port: int, password: str, retries: int = 5, logging: bool = False
@@ -33,41 +26,43 @@ class RconClient:
 
     def createClient(self) -> Client:
         """Returns an rcon.source.Client object for requests"""
-        return Client(self._ip, self._port, passwd=self._password)
+        return Client(self._ip, self._port, passwd=self._password, timeout=10)
 
     def command(self, command: str, *args) -> CommandResult:
-        """Attempts to execute a given command.
+        """
+        Attempts to execute a given command.
         Upon TimeoutError it will retry according to self._retries
         """
         tries = 0
-        while tries < self._retries:
+        while tries <= self._retries:
             try:
-                result = self._command(command, *args)
+                with self.createClient() as client:
+                    result = client.run(command, *args)
                 return CommandResult(command=command, successful=True, response=result)
+            except ConnectionRefusedError:
+                return CommandResult(
+                    command=command,
+                    successful=False,
+                    response="Connection refused",
+                    failureMessage="Connection refused",
+                )
             except TimeoutError:
                 if self.logging:
-                    print(f"({tries+1}/{self._retries}) Request timed out, retrying...")
+                    print(
+                        f"({tries+1}/{self._retries+1}) Request timed out, retrying..."
+                    )
                 tries += 1
         return CommandResult(
             command=command,
             successful=False,
-            response=f"Session timed out (after {self._retries} attempt(s))",
+            response=f"Session timed out (after {self._retries + 1} attempt(s))",
         )
-
-    @timeout(10)
-    def _command(self, command: str, *args) -> str:
-        """Private method to handle timeouts"""
-        try:
-            with self.createClient() as client:
-                return client.run(command, *args)
-        except ConnectionRefusedError:
-            return "Connection refused"
 
     def getInfo(self) -> dict:
         """Returns dict of current object's information"""
         return {
             "ip": self._ip,
             "port": self._port,
-            "password": self._password,
+            "password": "***",
             "retries": self._retries,
         }

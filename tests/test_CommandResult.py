@@ -1,6 +1,6 @@
 import unittest
 
-from zomboid_rcon.source import CommandResult
+from zomboid_rcon import CommandResult
 
 
 class CommandResult_test(unittest.TestCase):

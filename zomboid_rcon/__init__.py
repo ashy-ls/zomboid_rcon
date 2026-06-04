@@ -1,10 +1,11 @@
-"""
-Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
-    :copyright: (c) 2025 by JW: https://jackwhitworth.com
-    :license: GPL-3.0, see LICENSE for more details.
-"""
+"""Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
-from .zomboid_rcon import ZomboidRCON
+from .BaseRconClient import BaseRconClient
+from .CommandResult import CommandResult
+from .ZomboidRcon import (
+    ZomboidRcon,  # Provides backwards compatibility with older versions
+)
+from .ZomboidRcon import ZomboidRcon as ZomboidRCON
 
 __title__ = "zomboid_rcon"
-__version__ = "1.2.0"
+__version__ = "1.3.0"
