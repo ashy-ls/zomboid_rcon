@@ -1,6 +1,6 @@
 import unittest
 
-from zomboid_rcon.source import CommandResult
+from zomboid_rcon import CommandResult
 
 
 class CommandResult_test(unittest.TestCase):
@@ -69,3 +69,19 @@ class CommandResult_test(unittest.TestCase):
         for value in values:
             with self.assertRaises(ValueError):
                 self.cr.successful = value
+
+    def test_raw_response_always_returns_stored_response(self):
+        self.cr.response = "Server output"
+        self.cr.successful = True
+        self.assertEqual(self.cr.raw_response, "Server output")
+
+        self.cr.successful = False
+        self.assertEqual(self.cr.raw_response, "Server output")
+
+    def test_str_returns_raw_response_regardless_of_success(self):
+        self.cr.response = "Server output"
+        self.cr.successful = True
+        self.assertEqual(str(self.cr), "Server output")
+
+        self.cr.successful = False
+        self.assertEqual(str(self.cr), "Server output")

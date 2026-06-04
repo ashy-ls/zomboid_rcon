@@ -1,13 +1,10 @@
-"""
-Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon
-    :copyright: (c) 2025 by JW: https://jackwhitworth.com
-    :license: GPL-3.0, see LICENSE for more details.
-"""
+"""Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
-from .source import CommandResult, RconClient
+from .BaseRconClient import BaseRconClient
+from .CommandResult import CommandResult
 
 
-class ZomboidRCON(RconClient):
+class ZomboidRcon(BaseRconClient):
     """Used to interact with Zomboid servers via RCON"""
 
     def __init__(
@@ -16,7 +13,7 @@ class ZomboidRCON(RconClient):
         port: int = 27015,
         password: str = "pzserver",
         retries: int = 5,
-        logging: int = False,
+        logging: bool = False,
     ):
         super().__init__(ip, port, password, retries, logging)
 
@@ -24,25 +21,28 @@ class ZomboidRCON(RconClient):
     # GENERAL COMMANDS
     #
 
-    def additem(self, user: str, item: str) -> CommandResult:
+    def additem(self, user: str, item: str, count: int | None = None) -> CommandResult:
         """
         Gives the specified player a specified item.
-        /additem “user” “module.item”
+        /additem "user" "module.item" count
         Items can be found on the PZ wiki: https://pzwiki.net/wiki/Items
+        Count is optional.
         """
+        if count is not None:
+            return self.command("additem", user, item, str(count))
         return self.command("additem", user, item)
 
-    def addvehicle(self, user: str) -> CommandResult:
-        """Spawns a vehicle.
-        /addvehicle “user”
+    def addvehicle(self, vehicle: str, user: str) -> CommandResult:
+        """Spawns a vehicle near a player.
+        /addvehicle vehiclescript 'user'
         """
-        return self.command("addvehicle", user)
+        return self.command("addvehicle", vehicle, user)
 
     def addxp(self, user: str, perk: str, XP: int) -> CommandResult:
         """Gives XP to a player.
-        /addxp “user” “perk=XP”
+        /addxp "user" "perk=XP"
         """
-        return self.command("addxp", user, f"{perk}={str(XP)}")
+        return self.command("addxp", user, f"{perk}={XP}")
 
     def alarm(self) -> CommandResult:
         """Sounds a building alarm at the admin's position. Must be in a room.
@@ -64,21 +64,30 @@ class ZomboidRCON(RconClient):
 
     def changepwd(self, pwd: str, newPwd: str) -> CommandResult:
         """Changes your password.
-        /changepwd “pwd” “newPwd”
+        /changepwd "pwd" "newPwd"
         """
         return self.command("changepwd", pwd, newPwd)
 
-    def createhorde(self, number: int) -> CommandResult:
-        """Spawns a horde near a player.
-        /createhorde “number”
+    def clear(self) -> CommandResult:
+        """Clears the server console.
+        /clear
         """
+        return self.command("clear")
+
+    def createhorde(self, number: int, user: str | None = None) -> CommandResult:
+        """Spawns a horde near a player.
+        /createhorde count "username"
+        Username is optional.
+        """
+        if user is not None:
+            return self.command("createhorde", str(number), user)
         return self.command("createhorde", str(number))
 
-    def godmode(self, user: str) -> CommandResult:
+    def godmode(self, user: str, value: bool = True) -> CommandResult:
         """Makes a player invincible.
-        /godmode "user"
+        /godmode "user" -value
         """
-        return self.command("godmode", user)
+        return self.command("godmode", user, f"-{str(value).lower()}")
 
     def gunshot(self) -> CommandResult:
         """Makes a gunshot noise near the player.
@@ -93,17 +102,32 @@ class ZomboidRCON(RconClient):
         """
         return self.command("help")
 
-    def invisible(self, user: str) -> CommandResult:
+    def invisible(self, user: str, value: bool = True) -> CommandResult:
         """Makes a player invisible to zombies.
-        /invisible “user”
+        /invisible "user" -value
         """
-        return self.command("invisible", user)
+        return self.command("invisible", user, f"-{str(value).lower()}")
 
-    def noclip(self, user: str) -> CommandResult:
-        """Allows a player to pass through solid objects.
-        /noclip “user”
+    def lightning(self, user: str | None = None) -> CommandResult:
+        """Triggers a lightning strike on a player.
+        /lightning "username"
+        Username is optional.
         """
-        return self.command("noclip", user)
+        if user is not None:
+            return self.command("lightning", user)
+        return self.command("lightning")
+
+    def log(self, log_type: str, level: str) -> CommandResult:
+        """Sets the log level for a given log type.
+        /log "type" level
+        """
+        return self.command("log", log_type, level)
+
+    def noclip(self, user: str, value: bool = True) -> CommandResult:
+        """Allows a player to pass through solid objects.
+        /noclip "user" -value
+        """
+        return self.command("noclip", user, f"-{str(value).lower()}")
 
     def quit(self) -> CommandResult:
         """Saves and quits the server.
@@ -131,7 +155,7 @@ class ZomboidRCON(RconClient):
 
     def replay(self, user: str, command: str, filename: str) -> CommandResult:
         """Records and plays a replay for a moving player.
-        /replay “user” [-record | -play | -stop] “filename”
+        /replay "user" [-record | -play | -stop] "filename"
         """
         return self.command("replay", user, command, filename)
 
@@ -153,11 +177,32 @@ class ZomboidRCON(RconClient):
         """
         return self.command("showoptions")
 
-    def startrain(self) -> CommandResult:
+    def startrain(self, intensity: int | None = None) -> CommandResult:
         """Starts rain on the server.
-        /startrain
+        /startrain "intensity"
+        Intensity is optional, from 1 to 100.
         """
+        if intensity is not None:
+            return self.command("startrain", str(intensity))
         return self.command("startrain")
+
+    def startstorm(self, duration: int | None = None) -> CommandResult:
+        """Starts a storm on the server.
+        /startstorm "duration"
+        Duration is optional, in game hours.
+        """
+        if duration is not None:
+            return self.command("startstorm", str(duration))
+        return self.command("startstorm")
+
+    def stats(self, mode: str, period: int | None = None) -> CommandResult:
+        """Sets and clears server statistics.
+        /stats none/file/console/all period
+        Period is optional.
+        """
+        if period is not None:
+            return self.command("stats", mode, str(period))
+        return self.command("stats", mode)
 
     def stoprain(self) -> CommandResult:
         """Stops rain on the server.
@@ -165,7 +210,13 @@ class ZomboidRCON(RconClient):
         """
         return self.command("stoprain")
 
-    def teleport(self, user: str, toUser: str) -> CommandResult:
+    def stopweather(self) -> CommandResult:
+        """Stops weather on the server.
+        /stopweather
+        """
+        return self.command("stopweather")
+
+    def teleport(self, user: str, toUser: str | None = None) -> CommandResult:
         """Teleports to a player.
         /teleport "toUser" or /teleport "user" "toUser"
         """
@@ -177,7 +228,16 @@ class ZomboidRCON(RconClient):
         """Teleports to certain coordinates.
         /teleportto x,y,z
         """
-        return self.command("teleportto", f"{str(x)},{str(y)},{str(z)}")
+        return self.command("teleportto", f"{x},{y},{z}")
+
+    def thunder(self, user: str | None = None) -> CommandResult:
+        """Triggers a thunder event on a player.
+        /thunder "username"
+        Username is optional.
+        """
+        if user is not None:
+            return self.command("thunder", user)
+        return self.command("thunder")
 
     #
     # MODERATION COMMANDS
@@ -191,43 +251,49 @@ class ZomboidRCON(RconClient):
 
     def adduser(self, user: str, pwd: str) -> CommandResult:
         """Adds a new user to the whitelist.
-        /adduser “user” “pwd”
+        /adduser "user" "pwd"
         """
         return self.command("adduser", user, pwd)
 
     def addusertowhitelist(self, user: str) -> CommandResult:
         """Adds a single user connected with a password to the whitelist.
-        /addusertowhitelist “user”
+        /addusertowhitelist "user"
         """
         return self.command("addusertowhitelist", user)
 
     def removeuserfromwhitelist(self, user: str) -> CommandResult:
         """Removes a single user connected with a password to the whitelist.
-        /removeuserfromwhitelist “user”
+        /removeuserfromwhitelist "user"
         """
         return self.command("removeuserfromwhitelist", user)
 
     def banid(self, SteamID: str) -> CommandResult:
         """Bans a Steam ID.
-        /banid “SteamID”
+        /banid "SteamID"
         """
         return self.command("banid", SteamID)
 
     def unbanid(self, SteamID: str) -> CommandResult:
         """Unbans a Steam ID.
-        /unbanid “SteamID”
+        /unbanid "SteamID"
         """
         return self.command("unbanid", SteamID)
 
-    def banuser(self, user: str) -> CommandResult:
+    def banuser(self, user: str, ip: bool = False, reason: str | None = None) -> CommandResult:
         """Bans a user.
-        /ban "user"
+        /banuser "user" -ip -r "reason"
+        -ip also bans the user's IP address. -r specifies a ban reason.
         """
-        return self.command("banuser", user)
+        args = [user]
+        if ip:
+            args.append("-ip")
+        if reason is not None:
+            args.extend(["-r", reason])
+        return self.command("banuser", *args)
 
     def unbanuser(self, user: str) -> CommandResult:
         """Unbans a user.
-        /unban "user"
+        /unbanuser "user"
         """
         return self.command("unbanuser", user)
 
@@ -251,7 +317,7 @@ class ZomboidRCON(RconClient):
 
     def kickuser(self, user: str) -> CommandResult:
         """Kicks a user from the server.
-        /kickuser “user”
+        /kickuser "user"
         """
         return self.command("kickuser", user)
 
@@ -263,19 +329,22 @@ class ZomboidRCON(RconClient):
 
     def servermsg(self, message: str) -> CommandResult:
         """Broadcast a message to all players.
-        /servermsg “message”
+        /servermsg "message"
         Spaces are replaced with underscores for compatibility.
         """
-        return self.command("servermsg", message.replace(" ", "_").strip())
+        stripped = message.strip()
+        if not stripped:
+            raise ValueError("servermsg message cannot be empty or whitespace-only")
+        return self.command("servermsg", stripped.replace(" ", "_"))
 
     def setaccesslevel(self, user: str, accesslevel: str) -> CommandResult:
         """Set the access/permission level of a player.
-        /setaccesslevel “user” “[admin | moderator | overseer | gm | observer]”
+        /setaccesslevel "user" "[admin | moderator | overseer | gm | observer]"
         """
         return self.command("setaccesslevel", user, accesslevel)
 
     def voiceban(self, user: str, ban: str) -> CommandResult:
         """Ban a user from using the voice feature.
-        /voiceban “user” [-true | -false]
+        /voiceban "user" [-true | -false]
         """
         return self.command("voiceban", user, ban)
