@@ -129,7 +129,7 @@ pz.command("command", "arg1", "arg2", "etc")
 
 # Demonstration
 
-![Zomboid RCON demonstration GIF]([https://github.com/jmwhitworth/zomboid_rcon/tree/main/docs/zomboid_rcon_demo.gif](https://raw.githubusercontent.com/jmwhitworth/zomboid_rcon/refs/heads/main/docs/zomboid_rcon_demo.gif))
+![Zomboid RCON demonstration GIF](https://raw.githubusercontent.com/jmwhitworth/zomboid_rcon/refs/heads/main/docs/zomboid_rcon_demo.gif)
 
 
 # Known Issues
