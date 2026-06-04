@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 
+from rcon.exceptions import SessionTimeout, WrongPassword
+
 from zomboid_rcon import BaseRconClient, CommandResult
 
 
@@ -85,6 +87,44 @@ class BaseRconClient_test(unittest.TestCase):
 
         self.assertTrue(result.successful)
         self.assertEqual(self.client.createClient.call_count, 2)
+
+    def test_constructor_rejects_negative_retries(self):
+        with self.assertRaises(ValueError):
+            BaseRconClient("127.0.0.1", 27015, "secret", retries=-1)
+
+    def test_command_wrong_password_returns_failure(self):
+        self.client.createClient = MagicMock(side_effect=WrongPassword)
+
+        result = self.client.command("players")
+
+        self.assertFalse(result.successful)
+        self.assertIn("password", result.response.lower())
+
+    def test_command_wrong_password_does_not_retry(self):
+        self.client.createClient = MagicMock(side_effect=WrongPassword)
+
+        self.client.command("players")
+
+        self.assertEqual(self.client.createClient.call_count, 1)
+
+    def test_command_session_timeout_returns_failure(self):
+        self.client.createClient = MagicMock(
+            side_effect=SessionTimeout("packet ID mismatch")
+        )
+
+        result = self.client.command("players")
+
+        self.assertFalse(result.successful)
+        self.assertIn("timeout", result.response.lower())
+
+    def test_command_session_timeout_does_not_retry(self):
+        self.client.createClient = MagicMock(
+            side_effect=SessionTimeout("packet ID mismatch")
+        )
+
+        self.client.command("players")
+
+        self.assertEqual(self.client.createClient.call_count, 1)
 
     def test_getinfo_masks_password(self):
         info = self.client.getInfo()

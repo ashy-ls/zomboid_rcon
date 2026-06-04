@@ -23,7 +23,7 @@ class CommandResult:
         self.failureMessage = failureMessage
 
     def __str__(self) -> str:
-        return self.response
+        return self._response
 
     @property
     def command(self) -> str:

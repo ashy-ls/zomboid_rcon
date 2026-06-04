@@ -78,10 +78,10 @@ class CommandResult_test(unittest.TestCase):
         self.cr.successful = False
         self.assertEqual(self.cr.raw_response, "Server output")
 
-    def test_str_returns_response(self):
+    def test_str_returns_raw_response_regardless_of_success(self):
         self.cr.response = "Server output"
         self.cr.successful = True
         self.assertEqual(str(self.cr), "Server output")
 
         self.cr.successful = False
-        self.assertEqual(str(self.cr), self.cr.failureMessage)
+        self.assertEqual(str(self.cr), "Server output")

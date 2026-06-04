@@ -1,5 +1,6 @@
 """Zomboid RCON: https://github.com/jmwhitworth/zomboid_rcon"""
 
+from rcon.exceptions import SessionTimeout, WrongPassword
 from rcon.source import Client
 
 from .CommandResult import CommandResult
@@ -15,9 +16,11 @@ class BaseRconClient:
         ip (str): The IP Address of the server.
         port (int): The RCON port of the server.
         password (str): The RCON password of the server.
-        retries (int): Number of times to retry on request timeout.
+        retries (int): Number of retries on request timeout (must be >= 0).
         logging (bool): Print processes in terminal while running, used in debugging.
         """
+        if retries < 0:
+            raise ValueError(f"retries must be >= 0, got {retries}")
         self._ip = ip
         self._port = port
         self._password = password
@@ -45,6 +48,17 @@ class BaseRconClient:
                     successful=False,
                     response="Connection refused",
                     failureMessage="Connection refused",
+                )
+            except WrongPassword:
+                msg = "Wrong RCON password"
+                return CommandResult(
+                    command=command, successful=False, response=msg, failureMessage=msg
+                )
+            except SessionTimeout as e:
+                detail = str(e) or "packet ID mismatch"
+                msg = f"Session timeout: {detail}"
+                return CommandResult(
+                    command=command, successful=False, response=msg, failureMessage=msg
                 )
             except TimeoutError:
                 if self.logging:
