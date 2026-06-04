@@ -263,7 +263,7 @@ class ZomboidRcon(BaseRconClient):
         /servermsg “message”
         Spaces are replaced with underscores for compatibility.
         """
-        return self.command("servermsg", message.replace(" ", "_").strip())
+        return self.command("servermsg", message.strip().replace(" ", "_"))
 
     def setaccesslevel(self, user: str, accesslevel: str) -> CommandResult:
         """Set the access/permission level of a player.
