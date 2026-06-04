@@ -52,7 +52,7 @@ zomboid_rcon provides built-in methods for the available RCON commands within Pr
 ## General Commands
 
 - `additem("user", "item")` : Items can be found on the PZ wiki: https://pzwiki.net/wiki/Items
-- `addvehicle("user")` : Spawns a vehicle.
+- `addvehicle("vehiclescript", "user")` : Spawns a vehicle.
 - `addxp("user", "perk", xp)` : Gives XP to a player.
 - `alarm()` : Sounds a building alarm at the admin's position. Must be in a room.
 - `changeoption("option", "newOption")` : Changes a server option.

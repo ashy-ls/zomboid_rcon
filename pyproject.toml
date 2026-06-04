@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "zomboid_rcon"
 version = "1.3.0"
-description = "Python class for interacting with Project Zomboid servers using RCON "
+description = "Python class for interacting with Project Zomboid servers using RCON"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "Jack Whitworth", email = "jack@jackwhitworth.com" }]
