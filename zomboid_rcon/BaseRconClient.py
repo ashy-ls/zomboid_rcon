@@ -52,10 +52,12 @@ class BaseRconClient:
                         f"({tries+1}/{self._retries+1}) Request timed out, retrying..."
                     )
                 tries += 1
+        timeout_msg = f"Session timed out (after {self._retries + 1} attempt(s))"
         return CommandResult(
             command=command,
             successful=False,
-            response=f"Session timed out (after {self._retries + 1} attempt(s))",
+            response=timeout_msg,
+            failureMessage=timeout_msg,
         )
 
     def getInfo(self) -> dict:
