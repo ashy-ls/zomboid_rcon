@@ -19,5 +19,6 @@ class ZomboidRCON(ZomboidRcon):
         )
         super().__init__(*args, **kwargs)
 
+
 __title__ = "zomboid_rcon"
-__version__ = "2.0.0"
+__version__ = "2.1.0"

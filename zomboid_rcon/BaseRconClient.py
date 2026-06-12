@@ -32,9 +32,9 @@ class BaseRconClient:
 
     def createClient(self) -> Client:
         """Returns an rcon.source.Client object for requests"""
-        return Client(self._ip, self._port, passwd=self._password, timeout=10 )
+        return Client(self._ip, self._port, passwd=self._password, timeout=10)
 
-    def _set_status( self, status: str, connected: bool, error: str | None = None ):
+    def _set_status(self, status: str, connected: bool, error: str | None = None):
         self.status = status
         self.connected = connected
         self.last_error = error
@@ -194,9 +194,7 @@ class BaseRconClient:
                     failureMessage=msg,
                 )
 
-        timeout_msg = (
-            f"Session timed out (after {self._retries + 1} attempt(s))"
-        )
+        timeout_msg = f"Session timed out (after {self._retries + 1} attempt(s))"
 
         self._set_status(
             "timeout",
